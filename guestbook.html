@@ -162,7 +162,6 @@
 <nav>
   <a href="index.html">Home</a>
   <a href="scholarship.html">Scholarship Fund</a>
-  <a href="about.html">About Ronda</a>
   <a href="gallery.html">Gallery</a>
   <a href="guestbook.html">Guestbook</a>
 </nav>
@@ -233,8 +232,8 @@
     const pageEntries = entries.slice((currentPage-1)*PER_PAGE, currentPage*PER_PAGE);
     document.getElementById('ybPageLabel').textContent = totalPages > 1 ? 'Page '+currentPage+' of '+totalPages : 'Page 1';
     document.getElementById('ybPgNum').textContent = currentPage;
-    document.getElementById('ybPrev').disabled = currentPage <= 1;
-    document.getElementById('ybNext').disabled = currentPage >= totalPages;
+    if (document.getElementById('ybPrev')) document.getElementById('ybPrev').disabled = currentPage <= 1;
+    if (document.getElementById('ybNext')) document.getElementById('ybNext').disabled = currentPage >= totalPages;
 
     const wrap = document.getElementById('ybGrid');
     wrap.innerHTML = '';
