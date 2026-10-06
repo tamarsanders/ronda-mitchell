@@ -237,18 +237,18 @@
     if (document.getElementById('ybPrev')) document.getElementById('ybPrev').disabled = currentPage <= 1;
     if (document.getElementById('ybNext')) document.getElementById('ybNext').disabled = currentPage >= totalPages;
 
-    const wrap = document.getElementById('ybGrid');
+    const wrap = document.getElementById('ybScatter');
     wrap.innerHTML = '';
     pageEntries.forEach((e, i) => {
       const globalIdx = (currentPage - 1) * PER_PAGE + i;
       const font = FONTS[globalIdx % FONTS.length];
       const color = COLORS[globalIdx % COLORS.length];
       const slot = SLOTS[i % SLOTS.length];
-      const card = document.createElement('div');
-      card.className = 'yb-card';
-      card.style.cssText = `--rot:${slot[2]}deg;--op:${slot[4]};font-family:${font};color:${color};`;
-      card.innerHTML = `<div class="yb-msg">"${e.message}"</div><div class="yb-sig">— ${e.name}${e.relation ? ', '+e.relation : ''}</div><div class="yb-date">${e.date}</div>`;
-      wrap.appendChild(card);
+      const entry = document.createElement('div');
+      entry.className = 'yb-entry';
+      entry.style.cssText = `left:${slot[0]}%;top:${slot[1]}%;transform:rotate(${slot[2]}deg);max-width:${slot[3]}px;opacity:${slot[4]};font-family:${font};color:${color};`;
+      entry.innerHTML = `<div class="yb-msg-text">"${e.message}"</div><span class="yb-sig-line">— ${e.name}</span>${e.relation ? '<span class="yb-rel-line">'+e.relation+'</span>' : ''}<span class="yb-rel-line">${e.date}</span>`;
+      wrap.appendChild(entry);
     });
   }
 
