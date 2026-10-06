@@ -92,16 +92,48 @@
   .sign-btn:hover { background:var(--burgundy-mid); }
 
   .yb-page-label { font-family:'Cinzel',serif; font-size:0.75rem; letter-spacing:3px; color:var(--text-light); margin-bottom:10px; text-transform:uppercase; }
-  .yb-page { position:relative; width:100%; min-height:680px; background:#fff; border:1px solid #ddd; border-radius:2px; box-shadow:4px 4px 20px rgba(0,0,0,0.12),8px 8px 36px rgba(0,0,0,0.07); overflow:hidden; }
+  .yb-page { position:relative; width:100%; min-height:0; background:#fff; border:1px solid #ddd; border-radius:2px; box-shadow:4px 4px 20px rgba(0,0,0,0.12),8px 8px 36px rgba(0,0,0,0.07); overflow:hidden; }
   .yb-book-header { text-align:center; padding:20px 20px 12px; border-bottom:1px solid #eee; }
   .yb-book-title { font-family:'Cinzel',serif; font-size:0.85rem; letter-spacing:4px; color:#555; text-transform:uppercase; }
   .yb-book-sub { font-family:'Caveat',cursive; font-size:1rem; color:#888; margin-top:3px; }
-  .yb-scatter { position:relative; min-height:580px; padding:20px; }
-  .yb-entry { position:absolute; max-width:195px; }
+  .yb-scatter {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:34px 48px;
+    align-items:start;
+    padding:34px 38px 28px;
+    min-height:0;
+  }
+  .yb-entry {
+    position:relative;
+    max-width:none;
+    width:100%;
+    padding:6px 8px 10px;
+    overflow-wrap:anywhere;
+  }
   .yb-msg-text { line-height:1.48; word-break:break-word; }
-  .yb-sig-line { display:block; margin-top:5px; padding-top:4px; border-top:1px solid currentColor; font-weight:700; font-size:1.05em; }
-  .yb-rel-line { display:block; font-size:0.68em; opacity:0.6; margin-top:1px; font-family:'Lato',sans-serif; font-style:normal; letter-spacing:0.5px; }
-  .yb-pg-num { position:absolute; bottom:14px; right:20px; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.78rem; color:#aaa; }
+  .yb-sig-line { display:block; margin-top:8px; padding-top:5px; border-top:1px solid currentColor; font-weight:700; font-size:1.05em; }
+  .yb-rel-line { display:block; font-size:0.68em; opacity:0.6; margin-top:2px; font-family:'Lato',sans-serif; font-style:normal; letter-spacing:0.5px; }
+  .yb-pg-num {
+    position:static;
+    display:block;
+    text-align:right;
+    padding:0 20px 14px;
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:0.78rem;
+    color:#aaa;
+  }
+  @media (max-width:700px) {
+    .yb-scatter {
+      grid-template-columns:1fr;
+      gap:28px;
+      padding:28px 22px 22px;
+    }
+    .yb-entry {
+      transform:none !important;
+    }
+  }
   .yb-empty { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(-3deg); font-family:'Caveat',cursive; font-size:1.4rem; color:#ccc; text-align:center; width:260px; }
 
   .yb-pagination { display:flex; align-items:center; justify-content:center; gap:6px; margin-top:16px; }
@@ -243,11 +275,18 @@
       const globalIdx = (currentPage - 1) * PER_PAGE + i;
       const font = FONTS[globalIdx % FONTS.length];
       const color = COLORS[globalIdx % COLORS.length];
-      const slot = SLOTS[i % SLOTS.length];
+      const rotations = [-2, 2, -1, 1, -2, 2, -1, 1];
       const entry = document.createElement('div');
       entry.className = 'yb-entry';
-      entry.style.cssText = `left:${slot[0]}%;top:${slot[1]}%;transform:rotate(${slot[2]}deg);max-width:${slot[3]}px;opacity:${slot[4]};font-family:${font};color:${color};`;
-      entry.innerHTML = `<div class="yb-msg-text">"${e.message}"</div><span class="yb-sig-line">— ${e.name}</span>${e.relation ? '<span class="yb-rel-line">'+e.relation+'</span>' : ''}<span class="yb-rel-line">${e.date}</span>`;
+      entry.style.cssText = `transform:rotate(${rotations[i % rotations.length]}deg);font-family:${font};color:${color};`;
+
+      entry.innerHTML = `
+        <div class="yb-msg-text">"${e.message}"</div>
+        <span class="yb-sig-line">— ${e.name}</span>
+        ${e.relation ? `<span class="yb-rel-line">${e.relation}</span>` : ''}
+        <span class="yb-rel-line">${e.date}</span>
+      `;
+
       wrap.appendChild(entry);
     });
   }
